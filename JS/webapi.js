@@ -66,7 +66,7 @@ function CreateTaskForContact(executionContext) {
     
 }
 
-//OData Query Options: 
+// OData Query Options: 
 // | Query Option | Purpose                                                  |
 // | ------------ | -------------------------------------------------------- |
 // | `$select`    | Select specific columns/fields you want                  |

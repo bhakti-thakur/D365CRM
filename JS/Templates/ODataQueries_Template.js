@@ -31,6 +31,17 @@ function myRetrieveMultiple(executionContext) {
 
 /*
 
+OData Query Options: 
+| Query Option | Purpose                                                  |
+| ------------ | -------------------------------------------------------- |
+| `$select`    | Select specific columns/fields you want                  |
+| `$filter`    | Apply filter conditions                                  |
+| `$orderby`   | Sort the records                                         |
+| `$expand`    | Retrieve related entity data (1\:N or N:1 relationships) |
+| `$top`       | Limit number of records                                  |
+| `$skip`      | Skip records for paging                                  |
+
+
 | Placeholder         | Meaning                                 |
 | ------------------- | --------------------------------------- |
 | `entitylogicalname` | The logical name of the entity          |
