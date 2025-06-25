@@ -36,3 +36,16 @@ function creditHold(executionContext){
         console.log("Account retrieval error: "+ error.message)
     })
 }
+
+function validatePhone(executionContext) {
+    var formContext = executionContext.getFormContext();
+    var phone= formContext.getAttribute("telephone1").getValue();
+    var phonePattern = /^(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}$/;
+    if (phone && !phonePattern.test(phone)) {
+        var message = "Phone must be in (123) 123-1234 format"
+        formContext.ui.setFormNotification(message, "ERROR", "phoneValidation");
+        formContext.getAttribute("telephone1").setValue(null)// Clear the phone field
+    } else {
+        formContext.ui.clearNotification("phoneValidation");
+    }
+}

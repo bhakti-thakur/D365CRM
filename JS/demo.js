@@ -13,3 +13,11 @@ function demoOnLoad(executionContext) {
 function secondDemo(executionContext){
     let formContext = executionContext.getFormContext()
 }
+
+function preventAutoSave(executionContext){
+    var eventArgs = executionContext.getEventArgs();
+    if(eventArgs.getSaveMode() === 70){
+        eventArgs.preventDefault();
+        console.log("Auto-save prevented.");
+    }
+}
