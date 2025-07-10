@@ -9,17 +9,31 @@ async function setCreditLimit(primaryControl) { //currency
     Xrm.Utility.alertDialog("Credit Limit updated.");
 }
 
-async function copyPhonetoFax(primaryControl) { //currency
-    var formContext = primaryControl
-    var recordId = formContext.data.entity.getId().replace(/[{}]/g, "")
-    var phone = formContext.getAttribute("telephone1").getValue
+async function copyPhonetoFax(primaryControl) {
+    var formContext = primaryControl;
+    var recordId = formContext.data.entity.getId().replace(/[{}]/g, "");
+
+    var phone = formContext.getAttribute("telephone1").getValue(); // ✅ CALL the function
+
+    if (!phone) {
+        Xrm.Utility.alertDialog("Phone number is empty. Nothing to copy.");
+        return;
+    }
+
     var updateData = {
         fax: phone
-    }    
-    await Xrm.WebApi.updateRecord("account", recordId, updateData)
-    formContext.data.refresh()
-    Xrm.Utility.alertDialog("Fax updated");
+    };
+
+    try {
+        await Xrm.WebApi.updateRecord("account", recordId, updateData);
+        await formContext.data.refresh(); // ensures latest data is reflected on UI
+        Xrm.Utility.alertDialog("Fax updated successfully.");
+    } catch (error) {
+        console.error("Error updating fax:", error.message);
+        Xrm.Utility.alertDialog("Error updating fax: " + error.message);
+    }
 }
+
 
 function toggleEmailPreference(primaryControl){ //boolean
     try {
