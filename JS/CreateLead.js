@@ -107,3 +107,75 @@ function CreateLead(primaryControl){
     }
     
 }
+
+
+// Contact: 
+// First name = firstname
+// last name = lastname
+// job title = jobtitle
+// Email = emailaddress1
+// Mobile phone =  mobilephone
+// linked In id = ud_linkedinid
+
+//Lead: 
+// First name= firstname
+// Last Name = lastname
+// Jobtitle = jobtitle
+// Email = emailaddress1
+// Mobile phone = mobilephone
+// Linked in = bhaks_linkedin
+//_parentaccountid_value
+
+//Autopopulate lead from onChange existing contact field in lead form
+function autopopulateLead(executionContext) {
+    var formContext = executionContext.getFormContext();
+    try {
+        var existingContactAttr = formContext.getAttribute("ud_existingcontact");
+        if (existingContactAttr !== null && existingContactAttr.getValue() !== null) {
+            var existingContact = existingContactAttr.getValue();
+            var existingContactId = existingContact[0].id.replace(/[{}]/g, "");
+            console.log("Selected Contact: ", existingContact[0].name);
+
+            var query = "?$select=firstname,lastname,jobtitle,emailaddress1,mobilephone,ud_linkedinid,donotsendmm,donotemail,donotpostalmail,transactioncurrencyid,_parentcustomerid_value";
+
+            Xrm.WebApi.retrieveRecord("contact", existingContactId, query)
+                .then(function (result) {
+                    formContext.getAttribute("firstname").setValue(result.firstname || null);
+                    formContext.getAttribute("lastname").setValue(result.lastname || null);
+                    formContext.getAttribute("jobtitle").setValue(result.jobtitle || null);
+                    formContext.getAttribute("emailaddress1").setValue(result.emailaddress1 || null);
+                    formContext.getAttribute("mobilephone").setValue(result.mobilephone || null);
+                    formContext.getAttribute("bhaks_linkedin").setValue(result.ud_linkedinid || null);
+
+                    if (
+                        result._parentcustomerid_value &&
+                        result["_parentcustomerid_value@Microsoft.Dynamics.CRM.lookuplogicalname"] === "account"
+                        ) {
+                            formContext.getAttribute("parentaccountid").setValue([{
+                                id: result._parentcustomerid_value,
+                                name: result["_parentcustomerid_value@OData.Community.Display.V1.FormattedValue"] || "",
+                                entityType: "account"
+                            }]);
+                        }
+                    formContext.getAttribute("donotsendmm").setValue(result.donotsendmm || false);
+                    formContext.getAttribute("donotemail").setValue(result.donotemail || false);
+                    formContext.getAttribute("donotpostalmail").setValue(result.donotpostalmail || false);
+
+                    if (result.transactioncurrencyid) {
+                        formContext.getAttribute("transactioncurrencyid").setValue([{
+                            id: result.transactioncurrencyid,
+                            name: result["_transactioncurrencyid_value@OData.Community.Display.V1.FormattedValue"],
+                            entityType: "transactioncurrency"
+                        }]);
+                    }
+
+                    Xrm.Utility.alertDialog("Lead form auto-populated!");
+                })
+                .catch(function (err) {
+                    console.error("Error auto populating lead: ", err.message);
+                });
+        }
+    } catch (error) {
+        console.error("Error fetching existing Contact details: ", error);
+    }
+}
