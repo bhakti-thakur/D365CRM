@@ -40,3 +40,8 @@
         });
     }
  }
+
+ function refreshRibbonOnPrimaryContactChange(executionContext) {
+    var formContext = executionContext.getFormContext();
+    formContext.ui.refreshRibbon();
+}
