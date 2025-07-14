@@ -80,6 +80,19 @@ function CreateLead(primaryControl){
             .then(function(result){
                 console.log("Lead Created successfully: " + result.id);
                 Xrm.Utility.alertDialog("Lead created successfully!")
+                var LeadFormOptions ={
+                    entityName: "lead",
+                    entityId: result.id
+                } 
+                Xrm.Navigation.openForm(LeadFormOptions)
+                .then(function(openedForm){
+                    console.log("Lead Form Opened: "+ openedForm)
+                }, function(error){
+                    console.log("Error Opening Lead: "+ error.message)
+                })
+                .catch(function(error){
+                    console.log("Error Opening Lead: "+ error.message)
+                })
             })
             .catch(function(error){
                 console.log(error);
