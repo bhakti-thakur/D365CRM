@@ -21,3 +21,8 @@ function preventAutoSave(executionContext){
         console.log("Auto-save prevented.");
     }
 }
+
+function canEnableButton(primaryControl) {
+    var value = primaryControl.getAttribute("fax").getValue();
+    return value == null;
+}
