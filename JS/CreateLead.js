@@ -179,3 +179,70 @@ function autopopulateLead(executionContext) {
         console.error("Error fetching existing Contact details: ", error);
     }
 }
+
+function cloneLeadRecord(selectedControlSelectedItemReferences) {
+    // Check if any lead is selected
+    if (!selectedControlSelectedItemReferences || selectedControlSelectedItemReferences.length === 0) {
+        Xrm.Utility.alertDialog("No lead selected.");
+        return;
+    }
+
+    console.log(selectedControlSelectedItemReferences[0]);   
+    // Get the selected Lead ID from the grid
+    var leadId = selectedControlSelectedItemReferences[0].Id.replace(/[{}]/g, "");
+
+    // Retrieve the full lead record
+    Xrm.WebApi.retrieveRecord("lead", leadId).then(function (result) {
+        var dataToClone = {};
+
+        // List of fields to clone
+        var fieldsToClone = [
+            "firstname", "lastname", "jobtitle", "emailaddress1",
+            "mobilephone", "companyname", "description", "subject",
+            "industrycode", "leadsourcecode", "revenue", "donotsendmm",
+            "donotemail", "donotpostalmail", "bhaks_linkedin"
+        ];
+
+        // Clone simple fields
+        fieldsToClone.forEach(function (field) {
+            if (result.hasOwnProperty(field)) {
+                dataToClone[field] = result[field] || null;
+            }
+        });
+
+        // Clone lookups (manually)
+        if (result._transactioncurrencyid_value) {
+            dataToClone["transactioncurrencyid@odata.bind"] =
+                `/transactioncurrencies(${result._transactioncurrencyid_value})`;
+        }
+
+        if (result._parentaccountid_value) {
+            dataToClone["parentaccountid@odata.bind"] =
+                `/accounts(${result._parentaccountid_value})`;
+        }
+
+        if (result._ud_existingcontact_value){
+            console.log("Existing Contact ID: ", result._ud_existingcontact_value);
+            dataToClone["ud_ExistingContact@odata.bind"] = `/contacts(${result._ud_existingcontact_value})`;
+        }
+
+        // Create the new lead record
+        Xrm.WebApi.createRecord("lead", dataToClone).then(function (response) {
+            Xrm.Utility.alertDialog("Lead cloned successfully!");
+
+            // Optionally open the cloned record
+            Xrm.Navigation.openForm({
+                entityName: "lead",
+                entityId: response.id
+            });
+
+        }).catch(function (error) {
+            console.error("Error creating cloned lead:", error.message);
+            Xrm.Utility.alertDialog("Cloning failed: " + error.message);
+        });
+
+    }).catch(function (error) {
+        console.error("Error retrieving lead:", error.message);
+        Xrm.Utility.alertDialog("Could not retrieve lead details: " + error.message);
+    });
+}
