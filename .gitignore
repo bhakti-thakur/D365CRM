@@ -1,0 +1,5 @@
+Plugins/**/.vs/
+Plugins/**/packages/
+Plugins/**/bin/
+Plugins/**/obj/
+*.sln
