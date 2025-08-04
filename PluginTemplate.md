@@ -25,6 +25,28 @@ These are necessary for accessing CRM interfaces like `IPlugin`, `IOrganizationS
 public class ClassName : IPlugin
 ```
 This declares the plugin class. All plugins must implement `IPlugin` to be recognized and executed by CRM.
+
+IPlugin is the *core interface* provided by the *Microsoft.Xrm.Sdk* namespace that defines the contract for writing custom plugins in Microsoft Dynamics 365.
+
+It has only one method: `Execute(IServiceProvider serviceProvider)`
+
+#### Why is it Required?
+- CRM Plugin Engine executes your custom class via reflection.
+- It only looks for classes that implement `IPlugin` and call their `Execute()` method.
+- Without implementing IPlugin, your code will not be recognized or run by Dynamics 365.
+
+#### Role in Plugin Execution Pipeline
+When a message (like Create, Update, Delete) is triggered:
+- The CRM engine locates the registered plugin class.
+- It checks if the class implements `IPlugin`.
+- If yes, it calls the `Execute(IServiceProvider)` method.
+
+#### Why Not Use a Different Interface?
+- Because Dynamics 365 only supports IPlugin for synchronous/asynchronous plugins.
+- It is *tightly coupled to the internal plugin pipeline*.
+- If you don’t use IPlugin, the system has *no way to invoke your logic*.
+
+
 ##
 
 ### Constructor & execute method
