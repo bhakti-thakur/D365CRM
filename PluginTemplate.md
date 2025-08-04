@@ -39,7 +39,7 @@ IPluginExecutionContext context = (IPluginExecutionContext)
   serviceProvider.GetService(typeof(IPluginExecutionContext));
 ```
 Provides runtime information: entity involved, message name (e.g., Create), user info, stage (Pre/Post), Input/Output parameters, etc.
-# What is IPluginExecutionContext?
+## What is IPluginExecutionContext?
 IPluginExecutionContext is the core context object passed into your plugin during runtime.
 It gives you everything you need to know about the event that triggered the plugin — like:
 
@@ -51,16 +51,16 @@ It gives you everything you need to know about the event that triggered the plug
 
 - What stage is the plugin running in?
 
-# Why is it important?
+## Why is it important?
 You cannot write meaningful plugin logic without this context — it contains the real-time environment your plugin is running in.
 
-# How It Fits in the Plugin Lifecycle
+## How It Fits in the Plugin Lifecycle
 User Action (e.g., Update Contact) 
-    ⬇️
+    ➡️
 CRM triggers pipeline 
-    ⬇️
+    ➡️
 Plugin fires 
-    ⬇️
+    ➡️
 CRM injects IPluginExecutionContext ➝ you use it to make your logic dynamic
 
 
