@@ -18,22 +18,22 @@ using System.ServiceModel;
 ```
 
 These are necessary for accessing CRM interfaces like `IPlugin`, `IOrganizationService`, and handling faults from the CRM web service.
-
+##
 ```csharp
 public class ClassName : IPlugin
 ```
 This declares the plugin class. All plugins must implement `IPlugin` to be recognized and executed by CRM.
-
+##
 ```csharp
 public ClassName() { }
 ```
 Default constructor: Can be used to initialize configuration or dependencies if needed. Optional if no setup required.
-
+##
 ```csharp
 public void Execute(IServiceProvider serviceProvider)
 ```
 This is the main method called by CRM when the plugin is triggered.
-
+##
 ```csharp
 IPluginExecutionContext context = (IPluginExecutionContext)
   serviceProvider.GetService(typeof(IPluginExecutionContext));
@@ -63,7 +63,7 @@ Plugin fires
     ➡️
 CRM injects IPluginExecutionContext ➝ you use it to make your logic dynamic
 
-
+##
 ```csharp
 IOrganizationServiceFactory serviceFactory = 
   (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
@@ -73,7 +73,7 @@ IOrganizationServiceFactory serviceFactory =
 - A factory is a design pattern that helps you generate instances of a service (here, `IOrganizationService`).
 
 - This is needed because plugin code does not run in your user’s session directly, so you need this service to connect to Dataverse programmatically.
-
+##
 ```csharp
 IOrganizationService orgService = 
   serviceFactory.CreateOrganizationService(context.UserId);
@@ -98,6 +98,7 @@ IOrganizationService orgService =
 - `IOrganizationService`: Lets you do something in Dataverse.
 
 - `IOrganizationServiceFactory`: Bridges them by creating the service dynamically.
+##
 
  ```csharp
  ITracingService tracingService = 
@@ -105,6 +106,7 @@ IOrganizationService orgService =
 ```
 Useful for logging debug messages and troubleshooting, especially in sandbox environments where normal debugging isn't possible.
 
+##
 ```csharp
 if (context.InputParameters.Contains("Target") && 
     context.InputParameters["Target"] is Entity)
@@ -112,6 +114,8 @@ if (context.InputParameters.Contains("Target") &&
     Entity table_name = (Entity)context.InputParameters["Target"];
 ```
 Checks if the plugin was triggered by a record-level event and safely extracts the target entity object.
+
+##
 
 ```csharp
     if (table_name.LogicalName == "table_name")
@@ -121,6 +125,7 @@ Checks if the plugin was triggered by a record-level event and safely extracts t
 }
 ```
 Verifies the entity is the expected table (e.g., account, contact). Helps avoid running logic on the wrong entity.
+##
 
 ```csharp
 catch (FaultException<OrganizationServiceFault> ex)
@@ -129,6 +134,8 @@ catch (FaultException<OrganizationServiceFault> ex)
 }
 ```
 Catches CRM-specific service faults and throws them wrapped in a plugin-safe exception.
+##
+
 ```csharp
 catch (Exception ex)
 {
