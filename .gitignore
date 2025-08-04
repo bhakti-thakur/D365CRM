@@ -2,4 +2,8 @@ Plugins/**/.vs/
 Plugins/**/packages/
 Plugins/**/bin/
 Plugins/**/obj/
+Plugins/**/Properties
+*.config
+*.csproj
 *.sln
+*.snk
