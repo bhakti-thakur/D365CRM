@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Click me</title>
+    <script src="/WebResources/bhaks_randomJoke" type="text/javascript"></script>
 </head>
 <body>
-    <input type="button" value="Click me" onclick="alert('You clicked me!!')">
+    <input type="button" value="Click me" onclick="jokeFetcher.getJoke()">
+    <div id="jokebox" style=" margin-top: 15px;">  </div>
 </body>
 </html>
